@@ -5,9 +5,6 @@
 #include <stdlib.h>
 #include "grid.h"
 
-#define GRID_STRIDE 8
-#define GRID_SIZE GRID_STRIDE * GRID_STRIDE
-
 int numberOfNeighbors(int * grid, int cell);
 
 void printGrid(int grid[])

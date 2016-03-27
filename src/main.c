@@ -1,5 +1,6 @@
 #include <pebble.h>
 #include "grid.h"
+#include "render.h"
 
 static Window *s_main_window;
 static TextLayer *s_grid_layer;
@@ -40,15 +41,7 @@ static void main_window_unload(Window * window) {
 
 static void canvas_update_proc(Layer *layer, GContext *ctx) {
   //this is where the drawing happens
-  graphics_context_set_fill_color(ctx, GColorWhite);
-  GRect rect = GRect(10,10,20,20);
-  graphics_draw_rect(ctx, rect);
-  graphics_fill_rect(ctx, rect, 0, GCornerNone);
-  
-  graphics_context_set_fill_color(ctx, GColorBlack);
-  rect = GRect(30,10,20,20);
-  graphics_draw_rect(ctx, rect);
-  graphics_fill_rect(ctx, rect, 0, GCornerNone);
+  drawGrid(layer, ctx, s_grid);
 }
 
 static void init() {
