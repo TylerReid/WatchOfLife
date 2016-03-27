@@ -9,7 +9,7 @@ int numberOfRectForGridSize(GRect boundsOfWindow) {
   return width * height;
 }
 
-void drawGrid(Layer* layer, GContext* ctx, int* grid) {
+void drawGrid(Layer* layer, GContext* ctx, Grid grid) {
   GRect boundsOfLayer = layer_get_bounds(layer);
   int numberOfRects = numberOfRectForGridSize(boundsOfLayer);
   

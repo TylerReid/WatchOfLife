@@ -9,12 +9,12 @@ typedef struct Grid {
   int gridSize;
 } Grid;
 
-void printGrid(int grid[]);
+void printGrid(Grid grid);
 
-void getGridText(int* grid, char* text);
+void getGridText(Grid grid, char* text);
 
-int* createGrid();
+Grid createGrid();
 
-void simulate(int * grid);
+void simulate(Grid grid);
 
 char* allocateText();

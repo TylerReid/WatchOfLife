@@ -5,7 +5,7 @@
 static Window *s_main_window;
 static TextLayer *s_grid_layer;
 static Layer *s_cell_layer;
-static int* s_grid;
+static Grid s_grid;
 
 char* text;
 
@@ -66,7 +66,7 @@ static void init() {
 static void deinit() {
   window_destroy(s_main_window);
   free(text);
-  free(s_grid);
+  free(s_grid.grid);
 }
 
 int main(void) {
