@@ -11,9 +11,7 @@ char* text;
 
 static void handle_second_tick(struct tm* tick_time, TimeUnits units) {
   simulate(s_grid);
-  getGridText(s_grid, text);
-  
-  text_layer_set_text(s_grid_layer, text);
+  layer_mark_dirty(s_cell_layer);
 }
 
 static void main_window_load(Window *window) {
@@ -48,7 +46,7 @@ static void init() {
   s_grid = createGrid();
   text = allocateText();
   s_main_window = window_create();
-  window_set_background_color(s_main_window, GColorTiffanyBlue);
+  window_set_background_color(s_main_window, GColorBlack);
   window_set_window_handlers(s_main_window, (WindowHandlers) {
     .load = main_window_load,
     .unload = main_window_unload,
