@@ -4,8 +4,6 @@
 
 int getRectSide(GRect boundsOfWindow, Grid grid) {
   int width = boundsOfWindow.size.w / grid.gridStride;
-  //int height = boundsOfWindow.size.h / grid.gridStride;
-  
   return width;
 }
 
