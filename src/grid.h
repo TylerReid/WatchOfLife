@@ -1,11 +1,20 @@
 #pragma once
 
-void printGrid(int grid[]);
+#define GRID_STRIDE 8
+#define GRID_SIZE GRID_STRIDE * GRID_STRIDE
 
-void getGridText(int* grid, char* text);
+typedef struct Grid {
+  int* grid;
+  int gridStride;
+  int gridSize;
+} Grid;
 
-int* createGrid();
+void printGrid(Grid grid);
 
-void simulate(int * grid);
+void getGridText(Grid grid, char* text);
+
+Grid createGrid();
+
+void simulate(Grid grid);
 
 char* allocateText();

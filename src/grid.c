@@ -5,16 +5,13 @@
 #include <stdlib.h>
 #include "grid.h"
 
-#define GRID_STRIDE 8
-#define GRID_SIZE GRID_STRIDE * GRID_STRIDE
+int numberOfNeighbors(int* grid, int cell);
 
-int numberOfNeighbors(int * grid, int cell);
-
-void printGrid(int grid[])
+void printGrid(Grid grid)
 {
     for (int i = 0; i < GRID_SIZE ; i++)
     {
-        printf("%d", grid[i]);
+        printf("%d", grid.grid[i]);
         if ((i + 1) % GRID_STRIDE == 0)
         {
             printf("\n");
@@ -22,11 +19,11 @@ void printGrid(int grid[])
     }
 }
 
-void getGridText(int* grid, char* text) {
+void getGridText(Grid grid, char* text) {
   int n = 0;
-  for (int i = 0; i < GRID_SIZE + GRID_STRIDE ; i++)
+  for (int i = 0; i < grid.gridSize + grid.gridStride ; i++)
   {
-      text[i] = grid[n] + '0';
+      text[i] = grid.grid[n] + '0';
       if ((n + 1) % GRID_STRIDE == 0)
       {
         i++;
@@ -36,10 +33,10 @@ void getGridText(int* grid, char* text) {
   }
 }
 
-int* createGrid()
+Grid createGrid()
 {
-    int grid[GRID_SIZE] = 
-    {
+  int grid[GRID_SIZE] = 
+  {
       0,0,0,0,0,0,1,0,
       1,1,1,0,0,0,1,0,
       0,0,0,0,0,0,1,0,
@@ -48,30 +45,34 @@ int* createGrid()
       0,1,0,0,0,1,1,1,
       0,1,0,0,0,0,0,0,
       0,0,0,0,0,0,0,0,
-    };
-    //todo fix this crazy array copy thing once pointers are more understood
-    int * gridP = (int *)malloc(GRID_SIZE * sizeof(int));
+  };
+  //todo fix this crazy array copy thing once pointers are more understood
+  int * gridP = (int *)malloc(GRID_SIZE * sizeof(int));
     
-    for(int i = 0; i < GRID_SIZE; i++)
-    {
-        gridP[i] = grid[i];
-    }
+  for(int i = 0; i < GRID_SIZE; i++)
+  {
+      gridP[i] = grid[i];
+  }
     
-    return gridP;
+  Grid gridStruct;
+  gridStruct.grid = gridP;
+  gridStruct.gridStride = GRID_STRIDE;
+  gridStruct.gridSize = GRID_SIZE;
+  return gridStruct;
 }
 
 char* allocateText() {
   return (char*) malloc((GRID_SIZE + GRID_STRIDE) * sizeof(char));
 }
 
-void simulate(int * grid)
+void simulate(Grid grid)
 {
     int temp[GRID_SIZE] = { 0 };
     
     for(int i = 0; i < GRID_SIZE; i++)
     {
-        int neighborCount = numberOfNeighbors(grid, i);
-        if (grid[i] == 1)
+        int neighborCount = numberOfNeighbors(grid.grid, i);
+        if (grid.grid[i] == 1)
         {
             if (neighborCount < 2 || neighborCount > 3)
             {
@@ -93,11 +94,11 @@ void simulate(int * grid)
     
     for (int i = 0; i < GRID_SIZE; i++)
     {
-        grid[i] = temp[i];
+        grid.grid[i] = temp[i];
     }
 }
 
-int numberOfNeighbors(int * grid, int cell)
+int numberOfNeighbors(int* grid, int cell)
 {
     int count = 0;
     int topIndex = cell - GRID_STRIDE;
