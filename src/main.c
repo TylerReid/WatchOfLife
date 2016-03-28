@@ -7,7 +7,9 @@ static Layer *s_cell_layer;
 static Grid s_grid;
 
 static void handle_second_tick(struct tm* tick_time, TimeUnits units) {
+  //run one step of the game of life
   simulate(s_grid);
+  //the layer needs to be marked as dirty so that the layer will be re-drawn with the new grid
   layer_mark_dirty(s_cell_layer);
 }
 
@@ -24,17 +26,14 @@ static void main_window_load(Window *window) {
   layer_set_update_proc(s_cell_layer, canvas_update_proc);
   //add to the window
   layer_add_child(window_get_root_layer(s_main_window), s_cell_layer);
-  
+  //subscribe to the timer service so that the simulation will happen every second
   time_t now = time(NULL);
   struct tm *currentTime = localtime(&now);
   handle_second_tick(currentTime, SECOND_UNIT);
-  
   tick_timer_service_subscribe(SECOND_UNIT, handle_second_tick);
 }
 
-static void main_window_unload(Window * window) {
-  
-}
+static void main_window_unload(Window * window) { }
 
 static void init() {
   s_grid = createGrid();
