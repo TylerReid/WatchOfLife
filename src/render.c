@@ -3,40 +3,36 @@
 #include "grid.h"
 
 int getRectSide(GRect boundsOfWindow, Grid grid) {
+  //the side of our rectangle will be the number of complete times the stride fits in the width
   int width = boundsOfWindow.size.w / grid.gridStride;
   return width;
 }
 
-int getNumberOfColumns(GRect boundsOfWindow, int rectSide) {
-  int columns = boundsOfWindow.size.w / rectSide;
-  return columns;
-}
-
 void drawGrid(Layer* layer, GContext* ctx, Grid grid) {
   GRect boundsOfLayer = layer_get_bounds(layer);
-  int rectSide = getRectSide(boundsOfLayer, grid);
-  int numberOfColumns = getNumberOfColumns(boundsOfLayer, rectSide);
-  
+  int cellSideLength = getRectSide(boundsOfLayer, grid);
+  //start drawing from the top left, which is the origin
   GPoint currentOriginLocation = boundsOfLayer.origin;
-  
+  //loop through all of the grid cells and draw either a live cell or a dead one
   for (int i = 0; i < grid.gridSize; i++) {
+    //if the cell is 1, it is alive so draw white, else draw teal
     if(grid.grid[i] == 1) {
       graphics_context_set_fill_color(ctx, GColorWhite);
     } else {
       graphics_context_set_fill_color(ctx, GColorTiffanyBlue);
     }
-    
-    GRect cell = GRect(currentOriginLocation.x, currentOriginLocation.y, rectSide, rectSide);
-    //graphics_draw_rect(ctx, cell);
+    //create cell to draw at the current location
+    GRect cell = GRect(currentOriginLocation.x, currentOriginLocation.y, cellSideLength, cellSideLength);
+    //fill with rounded edges
     graphics_fill_rect(ctx, cell, 8, GCornersAll);
-    
+    //if we are at the end of the row, we need to wrap to the next one
     bool wrapThisIteration;
-    wrapThisIteration = (i + 1) % numberOfColumns == 0;
+    wrapThisIteration = (i + 1) % grid.gridStride == 0;
     
     if (wrapThisIteration) {
-      currentOriginLocation = GPoint(0, currentOriginLocation.y + rectSide);
+      currentOriginLocation = GPoint(0, currentOriginLocation.y + cellSideLength);
     } else {
-      currentOriginLocation = GPoint(currentOriginLocation.x + rectSide, currentOriginLocation.y);
+      currentOriginLocation = GPoint(currentOriginLocation.x + cellSideLength, currentOriginLocation.y);
     }
   }
 }
