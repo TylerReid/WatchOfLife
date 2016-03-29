@@ -8,8 +8,7 @@ static Grid s_grid;
 static TextLayer *s_time_layer;
 
 void setTime() {
-  //time_t temp = time(NULL);
-  //struct tm *tick_time = localtime(&temp);
+  //todo figure out the max time text size. Probably 15 would be plenty
   static char timeText[50];
   clock_copy_time_string(timeText, 50);
   text_layer_set_text(s_time_layer, timeText);
