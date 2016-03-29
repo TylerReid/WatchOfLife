@@ -8,19 +8,22 @@ static Grid s_grid;
 static TextLayer *s_time_layer;
 
 void setTime() {
-  //todo see if this could/should be a different size
-  char timeText[50];
+  //time_t temp = time(NULL);
+  //struct tm *tick_time = localtime(&temp);
+  static char timeText[50];
   clock_copy_time_string(timeText, 50);
   text_layer_set_text(s_time_layer, timeText);
-  text_layer_set_text_alignment(s_time_layer, GTextAlignmentCenter);
 }
 
 static void handle_second_tick(struct tm* tick_time, TimeUnits units) {
-  //setTime();
   //run one step of the game of life
   simulate(s_grid);
   //the layer needs to be marked as dirty so that the layer will be re-drawn with the new grid
   layer_mark_dirty(s_cell_layer);
+  //update the time once a minute
+  if (tick_time->tm_sec == 0) {
+    setTime();
+  }
 }
 
 static void canvas_update_proc(Layer *layer, GContext *ctx) {
@@ -45,6 +48,8 @@ static void main_window_load(Window *window) {
   text_layer_set_font(s_time_layer, fonts_get_system_font(FONT_KEY_LECO_20_BOLD_NUMBERS));
   text_layer_set_text_alignment(s_time_layer, GTextAlignmentCenter);
   layer_add_child(window_get_root_layer(s_main_window), text_layer_get_layer(s_time_layer));
+  //set time initially
+  setTime();
   
   //subscribe to the timer service so that the simulation will happen every second
   time_t now = time(NULL);
