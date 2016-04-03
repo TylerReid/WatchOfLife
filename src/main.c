@@ -15,7 +15,12 @@ void setTime() {
 }
 
 static void handle_second_tick(struct tm* tick_time, TimeUnits units) {
+  //every 30 seconds create a new grid
+  if (tick_time->tm_sec == 0 || tick_time->tm_sec == 29) {
+    s_grid = getRandomGrid(s_grid);
+  }
   //run one step of the game of life
+  //debug set sim to every 5 seconds// if (tick_time->tm_sec % 5 == 0)
   simulate(&s_grid);
   //the layer needs to be marked as dirty so that the layer will be re-drawn with the new grid
   layer_mark_dirty(s_cell_layer);

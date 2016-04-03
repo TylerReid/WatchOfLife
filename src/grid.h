@@ -8,4 +8,6 @@ typedef struct Grid {
 
 Grid createGrid();
 
+Grid getRandomGrid(Grid current);
+
 void simulate(Grid* grid);

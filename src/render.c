@@ -3,8 +3,8 @@
 #include "grid.h"
 
 int getRectSide(GRect boundsOfWindow, Grid grid) {
-  //the side of our rectangle will be the number of complete times the stride fits in the width
-  int width = boundsOfWindow.size.w / grid.gridStride;
+  //the side of our rectangle will be the number of times the stride fits in the width
+  int width = (boundsOfWindow.size.w + (grid.gridStride - 1))/ grid.gridStride;
   return width;
 }
 
