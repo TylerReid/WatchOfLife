@@ -1,7 +1,7 @@
 #pragma once
 
 typedef struct Grid {
-  int* grid;
+  char* grid;
   int gridStride;
   int gridSize;
 } Grid;

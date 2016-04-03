@@ -9,7 +9,7 @@ Grid createGrid() {
   int gridSize = gridStride * gridStride;
   
   //inital condition of game grid
-  int grid[] = 
+  char grid[] = 
   {
     0,0,0,0,0,0,1,1,0,0,0,0,
     0,0,0,0,0,0,1,1,0,0,0,0,
@@ -25,8 +25,8 @@ Grid createGrid() {
     0,0,0,0,1,1,0,0,0,0,0,0,
   };
   //allocate heap space for array, and copy the initial data to the heap location
-  int* gridP = (int *)malloc(gridSize * sizeof(int));
-  memcpy(gridP, &grid, gridSize * sizeof(int));
+  char* gridP = (char *)malloc(gridSize * sizeof(char));
+  memcpy(gridP, &grid, gridSize * sizeof(char));
   
   Grid gridStruct;
   gridStruct.grid = gridP;
@@ -44,7 +44,7 @@ Grid createGrid() {
 */
 void simulate(Grid* grid)
 {
-  int* temp = (int*)malloc(grid->gridSize * sizeof(int));
+  char* temp = (char*)malloc(grid->gridSize * sizeof(char));
   
   for(int i = 0; i < grid->gridSize; i++) {
       int neighborCount = numberOfNeighbors(*grid, i);
