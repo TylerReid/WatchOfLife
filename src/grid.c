@@ -1,15 +1,15 @@
 #include <pebble.h>
-#include "grid.h"
-
-#include <stdio.h>
 #include <stdlib.h>
 #include "grid.h"
 
-int numberOfNeighbors(int* grid, int cell);
+int numberOfNeighbors(Grid grid, int cell);
 
 Grid createGrid() {
+  int gridStride = 12;
+  int gridSize = gridStride * gridStride;
+  
   //inital condition of game grid
-  int grid[GRID_SIZE] = 
+  int grid[] = 
   {
     0,0,0,0,0,0,1,1,0,0,0,0,
     0,0,0,0,0,0,1,1,0,0,0,0,
@@ -25,13 +25,13 @@ Grid createGrid() {
     0,0,0,0,1,1,0,0,0,0,0,0,
   };
   //allocate heap space for array, and copy the initial data to the heap location
-  int * gridP = (int *)malloc(GRID_SIZE * sizeof(int));
-  memcpy(gridP, &grid, GRID_SIZE * sizeof(int));
+  int* gridP = (int *)malloc(gridSize * sizeof(int));
+  memcpy(gridP, &grid, gridSize * sizeof(int));
   
   Grid gridStruct;
   gridStruct.grid = gridP;
-  gridStruct.gridStride = GRID_STRIDE;
-  gridStruct.gridSize = GRID_SIZE;
+  gridStruct.gridStride = gridStride;
+  gridStruct.gridSize = gridSize;
   return gridStruct;
 }
 
@@ -42,70 +42,73 @@ Grid createGrid() {
   3. Any live cell with more than three live neighbours dies, as if by over-population.
   4. Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
 */
-void simulate(Grid grid)
+void simulate(Grid* grid)
 {
-  int temp[GRID_SIZE] = { 0 };
+  int* temp = (int*)malloc(grid->gridSize * sizeof(int));
   
-  for(int i = 0; i < GRID_SIZE; i++) {
-      int neighborCount = numberOfNeighbors(grid.grid, i);
+  for(int i = 0; i < grid->gridSize; i++) {
+      int neighborCount = numberOfNeighbors(*grid, i);
     
-      if (grid.grid[i] == 1) {  
+      if (grid->grid[i] == 1) {  
         //rule 1 & 3
         if (neighborCount < 2 || neighborCount > 3) {
-              temp[i] = 0;
-          } else {
-              //rule 2
-              temp[i] = 1;
-          }
+          temp[i] = 0;
+        } else {
+          //rule 2
+          temp[i] = 1;
+        }
       } else {
           //rule 4
           if (neighborCount == 3) {
               temp[i] = 1;
+          } else {
+            temp[i] = 0;
           }
       }
   }
-  memcpy(grid.grid, &temp, grid.gridSize * sizeof(int));
+  free(grid->grid);
+  grid->grid = temp;
 }
 
-int numberOfNeighbors(int* grid, int cell) {
+int numberOfNeighbors(Grid grid, int cell) {
   //the game of life is in a 2-D grid, but the data structure is linear
   //this means we need to do some manipulation to get the right values
   int count = 0;
   //the index into grid for the cell directly above
-  int topIndex = cell - GRID_STRIDE;
+  int topIndex = cell - grid.gridStride;
   //the index for the cell below
-  int bottomIndex = cell + GRID_STRIDE;
+  int bottomIndex = cell + grid.gridStride;
   //if the cell is on an edge, then we shouldn't look up neighbors in that direction
   //doing so with the same logic will get meaningless data.
-  bool onLeftEdge = cell % GRID_STRIDE == 0;
-  bool onRightEdge = cell % GRID_STRIDE == GRID_STRIDE - 1;
-  bool onTopEdge = cell < GRID_STRIDE;
-  bool onBottomEdge = cell + GRID_STRIDE >= GRID_STRIDE * GRID_STRIDE;
+  bool onLeftEdge = cell % grid.gridStride == 0;
+  bool onRightEdge = cell % grid.gridStride == grid.gridStride - 1;
+  bool onTopEdge = cell < grid.gridStride;
+  bool onBottomEdge = cell + grid.gridStride >= grid.gridStride * grid.gridStride;
     
   if (!onTopEdge) {
       //top
-      count += grid[topIndex];
+      count += grid.grid[topIndex];
       //top right
       if (!onRightEdge)
-          count += grid[topIndex + 1];
+          count += grid.grid[topIndex + 1];
       //top left
       if (!onLeftEdge)
-          count += grid[topIndex - 1];
+          count += grid.grid[topIndex - 1];
   }
   if (!onBottomEdge) {
       //bottom
-      count += grid[bottomIndex];
+      count += grid.grid[bottomIndex];
       //bottom right
       if (!onRightEdge)
-          count += grid[bottomIndex + 1];
+          count += grid.grid[bottomIndex + 1];
       //bottom left
       if (!onLeftEdge)
-          count += grid[bottomIndex - 1];
+          count += grid.grid[bottomIndex - 1];
   }
   if (!onRightEdge)
-      count += grid[cell + 1];
+      count += grid.grid[cell + 1];
   if (!onLeftEdge)
-      count += grid[cell - 1];
+      count += grid.grid[cell - 1];
     
   return count;
 }

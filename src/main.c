@@ -16,7 +16,7 @@ void setTime() {
 
 static void handle_second_tick(struct tm* tick_time, TimeUnits units) {
   //run one step of the game of life
-  simulate(s_grid);
+  simulate(&s_grid);
   //the layer needs to be marked as dirty so that the layer will be re-drawn with the new grid
   layer_mark_dirty(s_cell_layer);
   //update the time once a minute

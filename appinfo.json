@@ -13,9 +13,7 @@
     "sdkVersion": "3",
     "shortName": "WatchOfLife",
     "targetPlatforms": [
-        "aplite",
-        "basalt",
-        "chalk"
+        "basalt"
     ],
     "uuid": "28926b96-8bd4-4f80-b619-b98c0550c987",
     "versionLabel": "1.0",

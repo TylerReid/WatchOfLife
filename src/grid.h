@@ -1,8 +1,5 @@
 #pragma once
 
-#define GRID_STRIDE 12
-#define GRID_SIZE GRID_STRIDE * GRID_STRIDE
-
 typedef struct Grid {
   int* grid;
   int gridStride;
@@ -11,4 +8,4 @@ typedef struct Grid {
 
 Grid createGrid();
 
-void simulate(Grid grid);
+void simulate(Grid* grid);
