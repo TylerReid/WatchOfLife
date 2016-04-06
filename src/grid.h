@@ -2,6 +2,7 @@
 
 typedef struct Grid {
   char* grid;
+  char* tempGrid;
   int gridStride;
   int gridSize;
 } Grid;

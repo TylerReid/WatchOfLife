@@ -32,6 +32,7 @@ Grid createGrid() {
   gridStruct.grid = gridP;
   gridStruct.gridStride = gridStride;
   gridStruct.gridSize = gridSize;
+  gridStruct.tempGrid = (char *)malloc(gridSize * sizeof(char));
   return gridStruct;
 }
 
@@ -43,30 +44,30 @@ Grid createGrid() {
 */
 void simulate(Grid* grid)
 { 
-  char* temp = (char*)malloc(grid->gridSize * sizeof(char));
-  
   for(int i = 0; i < grid->gridSize; i++) {
       int neighborCount = numberOfNeighbors(*grid, i);
     
       if (grid->grid[i] == 1) {  
         //rule 1 & 3
         if (neighborCount < 2 || neighborCount > 3) {
-          temp[i] = 0;
+          grid->tempGrid[i] = 0;
         } else {
           //rule 2
-          temp[i] = 1;
+          grid->tempGrid[i] = 1;
         }
       } else {
           //rule 4
           if (neighborCount == 3) {
-              temp[i] = 1;
+              grid->tempGrid[i] = 1;
           } else {
-            temp[i] = 0;
+            grid->tempGrid[i] = 0;
           }
       }
   }
-  free(grid->grid);
-  grid->grid = temp;
+  //swap freshly simulated grid with original 
+  char* old = grid->grid;
+  grid->grid = grid->tempGrid;
+  grid->tempGrid = old;
 }
 
 int numberOfNeighbors(Grid grid, int cell) {
@@ -140,6 +141,7 @@ Grid createBarberPole() {
   gridStruct.grid = gridP;
   gridStruct.gridStride = gridStride;
   gridStruct.gridSize = gridSize;
+  gridStruct.tempGrid = (char *)malloc(gridSize * sizeof(char));
   return gridStruct;
 }
 
@@ -182,6 +184,7 @@ Grid createQueenShuttle() {
   gridStruct.grid = gridP;
   gridStruct.gridStride = gridStride;
   gridStruct.gridSize = gridSize;
+  gridStruct.tempGrid = (char *)malloc(gridSize * sizeof(char));
   return gridStruct;
 }
 
@@ -209,6 +212,7 @@ Grid createMazing() {
   gridStruct.grid = gridP;
   gridStruct.gridStride = gridStride;
   gridStruct.gridSize = gridSize;
+  gridStruct.tempGrid = (char *)malloc(gridSize * sizeof(char));
   return gridStruct;
 }
 
@@ -258,6 +262,7 @@ Grid createPrePulsarShuttle() {
   gridStruct.grid = gridP;
   gridStruct.gridStride = gridStride;
   gridStruct.gridSize = gridSize;
+  gridStruct.tempGrid = (char *)malloc(gridSize * sizeof(char));
   return gridStruct;
 }
 
