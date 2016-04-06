@@ -116,6 +116,7 @@ int numberOfNeighbors(Grid grid, int cell) {
 
 Grid getRandomGrid(Grid current) {
   free(current.grid);
+  free(current.tempGrid);
   Grid new;
   static int iteration = 0;
   switch (iteration) {
