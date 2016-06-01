@@ -1,6 +1,7 @@
 #include <pebble.h>
 #include <stdlib.h>
 #include "grid.h"
+#include "gridData.h"
 
 int numberOfNeighbors(Grid grid, int cell);
 
@@ -32,6 +33,7 @@ Grid createGrid() {
   gridStruct.grid = gridP;
   gridStruct.gridStride = gridStride;
   gridStruct.gridSize = gridSize;
+  gridStruct.tempGrid = (char *)malloc(gridSize * sizeof(char));
   return gridStruct;
 }
 
@@ -43,30 +45,30 @@ Grid createGrid() {
 */
 void simulate(Grid* grid)
 { 
-  char* temp = (char*)malloc(grid->gridSize * sizeof(char));
-  
   for(int i = 0; i < grid->gridSize; i++) {
       int neighborCount = numberOfNeighbors(*grid, i);
     
       if (grid->grid[i] == 1) {  
         //rule 1 & 3
         if (neighborCount < 2 || neighborCount > 3) {
-          temp[i] = 0;
+          grid->tempGrid[i] = 0;
         } else {
           //rule 2
-          temp[i] = 1;
+          grid->tempGrid[i] = 1;
         }
       } else {
           //rule 4
           if (neighborCount == 3) {
-              temp[i] = 1;
+              grid->tempGrid[i] = 1;
           } else {
-            temp[i] = 0;
+            grid->tempGrid[i] = 0;
           }
       }
   }
-  free(grid->grid);
-  grid->grid = temp;
+  //swap freshly simulated grid with original 
+  char* old = grid->grid;
+  grid->grid = grid->tempGrid;
+  grid->tempGrid = old;
 }
 
 int numberOfNeighbors(Grid grid, int cell) {
@@ -112,157 +114,9 @@ int numberOfNeighbors(Grid grid, int cell) {
   return count;
 }
 
-Grid createBarberPole() {
-  int gridStride = 12;
-  int gridSize = gridStride * gridStride;
-  
-  //inital condition of game grid
-  char grid[] = 
-  {
-    0,0,0,0,0,0,0,0,0,0,1,1,
-    0,0,0,0,0,0,0,0,0,0,0,1,
-    0,0,0,0,0,0,0,0,0,1,0,0,
-    0,0,0,0,0,0,0,1,0,1,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,1,0,1,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,1,0,1,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,1,1,0,0,0,0,0,0,0,0,
-    1,0,0,0,0,0,0,0,0,0,0,0,
-    1,1,0,0,0,0,0,0,0,0,0,0,
-  };
-  //allocate heap space for array, and copy the initial data to the heap location
-  char* gridP = (char *)malloc(gridSize * sizeof(char));
-  memcpy(gridP, &grid, gridSize * sizeof(char));
-  
-  Grid gridStruct;
-  gridStruct.grid = gridP;
-  gridStruct.gridStride = gridStride;
-  gridStruct.gridSize = gridSize;
-  return gridStruct;
-}
-
-Grid createQueenShuttle() {
-  int gridStride = 22;
-  int gridSize = gridStride * gridStride;
-  
-  char grid[] = {
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,1,1,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,
-    0,1,1,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,1,1,
-    0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-  };
-  
-  //allocate heap space for array, and copy the initial data to the heap location
-  char* gridP = (char *)malloc(gridSize * sizeof(char));
-  memcpy(gridP, &grid, gridSize * sizeof(char));
-  
-  Grid gridStruct;
-  gridStruct.grid = gridP;
-  gridStruct.gridStride = gridStride;
-  gridStruct.gridSize = gridSize;
-  return gridStruct;
-}
-
-Grid createMazing() {
-  int gridStride = 8;
-  int gridSize = gridStride * gridStride;
-  
-  //inital condition of game grid
-  char grid[] = 
-  {
-    0,0,0,0,0,0,0,0,
-    0,0,0,1,1,0,0,0,
-    0,1,0,1,0,0,0,0,
-    1,0,0,0,0,0,1,0,
-    0,1,0,0,0,1,1,0,
-    0,0,0,0,0,0,0,0,
-    0,0,0,1,0,1,0,0,
-    0,0,0,0,1,0,0,0,
-  };
-  //allocate heap space for array, and copy the initial data to the heap location
-  char* gridP = (char *)malloc(gridSize * sizeof(char));
-  memcpy(gridP, &grid, gridSize * sizeof(char));
-  
-  Grid gridStruct;
-  gridStruct.grid = gridP;
-  gridStruct.gridStride = gridStride;
-  gridStruct.gridSize = gridSize;
-  return gridStruct;
-}
-
-Grid createPrePulsarShuttle() {
-  int gridStride = 30;
-  int gridSize = gridStride * gridStride;
-  
-  //inital condition of game grid
-  char grid[] = 
-  {
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,1,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,
-    0,0,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,
-    0,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,
-    0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-  };
-  //allocate heap space for array, and copy the initial data to the heap location
-  char* gridP = (char *)malloc(gridSize * sizeof(char));
-  memcpy(gridP, &grid, gridSize * sizeof(char));
-  
-  Grid gridStruct;
-  gridStruct.grid = gridP;
-  gridStruct.gridStride = gridStride;
-  gridStruct.gridSize = gridSize;
-  return gridStruct;
-}
-
 Grid getRandomGrid(Grid current) {
   free(current.grid);
+  free(current.tempGrid);
   Grid new;
   static int iteration = 0;
   switch (iteration) {
